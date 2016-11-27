@@ -1,0 +1,21 @@
+{% import 'Interposition/macros.tmpl' as macros -%}
+FIT_LOGGING_ENABLE=0
+
+FIT_input_log=build/ifile.dat
+FIT_stdout_log=build/ofile.dat
+FIT_stderr_log=build/efile.dat
+FIT_main_log=build/mfile.dat
+
+
+#The following are per function flags
+#Some are for function that can only have an error number injected returned like close() or fgetc()
+#While functions like read/write and variants thereof will have their returns truncated to a single chunk/byte
+#(with other state kept intact)
+
+#Set to 0 for disable
+#Set to 1 for always on
+#Set to n for activation on every nth call
+
+{% for func in fn_list if 'nogen' not in func.flags and 'shorted' not in func.flags and 'vararg' not in func.flags -%}
+FIT_{{func.name|upper}}_FLAG=0
+{% endfor %}

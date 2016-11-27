@@ -1,0 +1,260 @@
+{# modified from OPUS #}
+{% macro fn_arg_def(fn) -%}
+  {%- if "vararg" in fn.flags -%}
+    {%- for arg in fn.args -%}
+      {{arg.type~" "~arg.name}}{{", "}}
+    {%- endfor -%}{{"..."}}
+  {%- else -%}
+    {%- for arg in fn.args -%}
+      {%- if arg.dims -%}
+        {{arg.type~" "~arg.name~arg.dims}}{%- if not loop.last -%}{{", "}}{%- endif -%}
+      {%- else -%}
+        {{arg.type~" "~arg.name}}{%- if not loop.last -%}{{", "}}{%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endif -%}
+{%- endmacro %}
+
+{% macro fn_arg_call(fn) -%}
+  {%- if "vararg" in fn.flags -%}
+    {%- for arg in fn.args -%}
+      {{arg.name}}{{", "}}
+    {%- endfor -%}{{"va_args"}}
+  {%- else -%}
+    {%- for arg in fn.args -%}
+      {{arg.name}}{%- if not loop.last -%}{{", "}}{%- endif -%}
+    {%- endfor -%}
+  {%- endif -%}
+{%- endmacro %}
+
+
+{% macro fn_def_macro_safe(fn) -%}
+	{%- if fn.args is string -%}
+		{{fn.ret}} ({{fn.name}})({{fn.args}})
+	{%- else -%}
+		{{fn.ret}} ({{fn.name}})({{ fn_arg_def(fn) }})
+	{%- endif -%}
+{%- endmacro %}
+
+
+{% macro fn_ptr_type_macro_safe(fn) -%}
+	{%- if fn.args is string -%}
+		{{fn.ret}} (*{{fn.name}}_)({{fn.args}});
+	{%- else -%}
+		{{fn.ret}} (*{{fn.name}}_)({{ fn_arg_def(fn) }});
+	{%- endif -%}
+{%- endmacro %}
+
+
+{% macro fn_signature(fn) -%}
+	{%- if fn.args is string -%}
+		{{fn.args}}
+	{%- else -%}
+		{{ fn_arg_def(fn) }}
+	{%- endif -%}
+{%- endmacro %}
+
+
+{% macro func_call(fn) -%}
+	{%- if fn.args is string -%}
+		{{fn.name}}_({{fn.args}})
+	{%- else -%}
+		{{fn.name}}_({{ fn_arg_call(fn) }})
+	{%- endif -%}
+{%- endmacro %}
+
+{% macro log_cases(func) %}
+				{% if 'input_char' in func.flags %}
+                {{func.ret}} ret = FIT::Original.{{func_call(func)}};
+                if (ret!=-1) {
+                    FIT::Original.logFile->log_input_c(ret);
+                }
+                {% elif 'output_char' in func.flags %}
+
+                int target_fd = {%if 'file' in func.flags %}fileno(stream){% else %}fd{% endif %};
+                {{func.ret}} ret = FIT::Original.{{func_call(func)}};
+                if (ret==c) {
+                    FIT::Original.logFile->log_output_c(target_fd, c);
+                }
+                {% elif 'input_string' in func.flags %}
+                {{func.ret}} ret = FIT::Original.{{func_call(func)}};
+                if (ret!=NULL){
+                    {% if func.name is not exclusive_fgets %}FIT::Original.logFile->log_input_str(s, size);{% else %}FIT::Original.logFile->log_input_str(s, n);{% endif %}
+                }
+                {% elif 'output_string' in func.flags %}
+                int target_fd = {%if 'file' in func.flags %}fileno(stream){% else %}fd{% endif %};
+                {{func.ret}} ret = FIT::Original.{{func_call(func)}};
+                if (ret>=0){
+                    FIT::Original.logFile->log_output_str(target_fd, s, ret);
+                }
+                {% elif 'input_complex' in func.flags %}
+                {{func.ret}} ret = FIT::Original.{{func_call(func)}};
+                if (ret>=0){
+                    FIT::Original.logFile->log_input_clx(ptr, size, ret);
+                }
+                {% elif 'output_complex' in func.flags %}
+                int target_fd = {%if 'file' in func.flags %}fileno(stream){% else %}fd{% endif %};
+                {{func.ret}} ret = FIT::Original.{{func_call(func)}};
+                if (ret>=0){
+                    FIT::Original.logFile->log_output_clx(target_fd, ptr, size, ret);
+                }
+                {% elif 'input_complex_byte' in func.flags %}
+                {{func.ret}} ret = FIT::Original.{{func_call(func)}};
+                if (ret>=0){
+                    FIT::Original.logFile->log_input_clx(ptr, 1, ret);
+                }
+                {% elif 'output_complex_byte' in func.flags %}
+                int target_fd = {%if 'file' in func.flags %}fileno(stream){% else %}fd{% endif %};
+                {{func.ret}} ret = FIT::Original.{{func_call(func)}};
+                if (ret>=0){
+                    FIT::Original.logFile->log_output_clx(target_fd, ptr, 1, ret);
+                }
+                {% elif 'input_ws' in func.flags %}
+                {{func.ret}} ret = FIT::Original.{{func_call(func)}};
+                if (ret!=NULL){
+                    {% if func.name is not is_unlocked %}FIT::Original.logFile->log_input_clx((void*)ws, sizeof(wchar_t), size);{% else %}FIT::Original.logFile->log_input_clx((void*)ws, sizeof(wchar_t), n);{% endif %}
+                }
+                {% elif 'output_ws' in func.flags %}
+                int target_fd = {%if 'file' in func.flags %}fileno(stream){% else %}fd{% endif %};
+                {{func.ret}} ret = FIT::Original.{{func_call(func)}};
+                if (ret!=NULL){
+                    {% if func.name is not is_unlocked %}FIT::Original.logFile->log_output_clx(target_fd, (void*)ws, sizeof(wchar_t), size);{% else %}FIT::Original.logFile->log_output_clx(target_fd, (void*)ws, sizeof(wchar_t), n);{% endif %}
+                }
+                {% elif 'input_special_getline' in func.flags %}
+                {{func.ret}} ret = FIT::Original.{{func_call(func)}};
+                if (ret>=0){
+                    FIT::Original.logFile->log_input_clx((void*) *lineptr, sizeof(char), ret);
+                }
+                {% elif 'output_format' in func.flags %}
+                {{func.ret}} ret;
+                int target_fd = {%if 'file' in func.flags %}fileno(stream){% else %}fd{% endif %};
+                size_t bufsize_init =stringlen(format)+64;
+                char f_tmp[bufsize_init-1];
+                size_t  lim = vsnprintf(f_tmp,bufsize_init, format, ap);
+                if (lim > bufsize_init){
+                    char f_tmp2[lim+1];
+                    size_t nmemb = vsnprintf(f_tmp2,lim+1, format, ap);
+                    {%if 'file' in func.flags -%}
+                    ret = ({{func.ret}}) FIT::Original.fwrite_((void*) f_tmp2, sizeof(char), nmemb, stream);
+                    {% else -%}
+                    ret = ({{func.ret}}) FIT::Original.write_(fd, (void*) f_tmp2, sizeof(char)*nmemb);
+                    {%- endif %}
+                    if (ret > 0){
+                        FIT::Original.logFile->log_output_clx(target_fd,(void*) f_tmp2, sizeof(char), ret);
+                    }
+                } else {
+                    {%if 'file' in func.flags -%}
+                    ret = ({{func.ret}}) FIT::Original.fwrite_((void*) f_tmp, sizeof(char), lim, stream);
+                    {% else -%}
+                    ret = ({{func.ret}}) FIT::Original.write_(fd, (void*) f_tmp, sizeof(char)*lim);
+                    {%- endif %}
+                    if (ret > 0){
+                        FIT::Original.logFile->log_output_clx(target_fd,(void*) f_tmp, sizeof(char), ret);
+                    }
+                }
+                {% else %}
+                //TODO: incomplete CODE: 00FF00
+                {% endif %}
+                FIT::insideFIT = false;
+                return ret;
+{%- endmacro %}
+
+
+{% macro func_short_call(fn) -%}
+	{%- if fn.args is string -%}
+		{{fn.name}}_({{fn.args}})
+	{%- elif "vararg" in fn.flags -%}
+	{{fn.name}}_(
+    {%- for arg in fn.args -%}
+      {{arg.name}}{{", "}}
+    {%- endfor -%}{{"va_args"}})
+	{%- else -%}
+		{{fn.name}}_(
+		{%- for arg in fn.args -%}
+        {% if arg.name is is_nb %}1{% else %}{{arg.name}}{% endif %}{%- if not loop.last -%}{{", "}}{%- endif -%}
+        {%- endfor -%}
+		)
+	{%- endif -%}
+{%- endmacro %}
+
+{% macro shortinj_cases(func) %}
+                {% if 'input_complex' in func.flags %}
+
+                {{func.ret}} ret = FIT::Original.{{func_short_call(func)}};
+                if (ret>0){
+                    FIT::Original.logFile->log_input_clx(ptr, size, ret);
+                }
+
+                {% elif 'output_complex' in func.flags %}
+
+                int target_fd = {%if 'file' in func.flags %}fileno(stream){% else %}fd{% endif %};
+                {{func.ret}} ret = FIT::Original.{{func_short_call(func)}};
+                if (ret>0){
+                    FIT::Original.logFile->log_output_clx(target_fd, ptr, size, ret);
+                }
+
+                {% elif 'input_complex_byte' in func.flags %}
+
+                {{func.ret}} ret = FIT::Original.{{func_short_call(func)}};
+                if (ret>0){
+                    FIT::Original.logFile->log_input_clx(ptr, 1, ret);
+                }
+
+                {% elif 'output_complex_byte' in func.flags %}
+
+                int target_fd = {%if 'file' in func.flags %}fileno(stream){% else %}fd{% endif %};
+                {{func.ret}} ret = FIT::Original.{{func_short_call(func)}};
+                if (ret>0){
+                    FIT::Original.logFile->log_output_clx(target_fd, ptr, 1, ret);
+                }
+
+                {% elif 'input_ws' in func.flags %}
+                //UNUSED
+                {{func.ret}} ret = FIT::Original.{{func_short_call(func)}};
+                if (ret!=NULL){
+                    {% if func.name is not is_unlocked %}FIT::Original.logFile->log_input_clx((void*)ws, sizeof(wchar_t), size);{% else %}FIT::Original.logFile->log_input_clx((void*)ws, sizeof(wchar_t), n);{% endif %}
+                }
+
+                {% elif 'output_ws' in func.flags %}
+                //UNUSED
+                int target_fd = {%if 'file' in func.flags %}fileno(stream){% else %}fd{% endif %};
+                {{func.ret}} ret = FIT::Original.{{func_short_call(func)}};
+                if (ret!=NULL){
+                    {% if func.name is not is_unlocked %}FIT::Original.logFile->log_output_clx(target_fd, (void*)ws, sizeof(wchar_t), size);{% else %}FIT::Original.logFile->log_output_clx(target_fd, (void*)ws, sizeof(wchar_t), n);{% endif %}
+                }
+                {% elif 'output_format' in func.flags %}
+                {{func.ret}} ret;
+                int target_fd = {%if 'file' in func.flags %}fileno(stream){% else %}fd{% endif %};
+                size_t bufsize_init =stringlen(format)+64;
+                char f_tmp[bufsize_init];
+                size_t  lim = vsnprintf(f_tmp,bufsize_init, format, ap);
+                if (lim > bufsize_init-1){
+                    char f_tmp2[lim+1];
+                    size_t nmemb = vsnprintf(f_tmp2,lim+1, format, ap);
+
+                    {%if 'file' in func.flags -%}
+                    ret = ({{func.ret}}) FIT::Original.fwrite_((void*) f_tmp2, sizeof(char), 1, stream);
+                    {% else -%}
+                    ret = ({{func.ret}}) FIT::Original.write_(fd, (void*) f_tmp2, sizeof(char));
+                    {%- endif %}
+                    if (ret > 0){
+                        FIT::Original.logFile->log_output_clx(target_fd,(void*) f_tmp2, sizeof(char), ret);
+                    }
+                } else {
+                    {%if 'file' in func.flags -%}
+                    ret = ({{func.ret}}) FIT::Original.fwrite_((void*) f_tmp, sizeof(char), 1, stream);
+                    {% else -%}
+                    ret = ({{func.ret}}) FIT::Original.write_(fd, (void*) f_tmp, sizeof(char));
+                    {%- endif %}
+                    if (ret > 0){
+                        FIT::Original.logFile->log_output_clx(target_fd,(void*) f_tmp, sizeof(char), ret);
+                    }
+                }
+                {% else %}
+
+                //TODO: incomplete CODE: 00FF02
+
+                {% endif %}
+                FIT::insideFIT = false;
+                return ret;
+{%- endmacro %}

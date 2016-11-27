@@ -1,0 +1,2702 @@
+- name: close
+  ret: "int"
+  ret_pos: [0, -1]
+  fd_protect:
+    arg: "fd"
+    errno: "EBADF"
+  flags: [fdprotect, errinj]
+  args:
+  - flags:
+      read: ""
+    name: fd
+    type: "int"
+  errs: [EBADF, EINTR, EIO]
+  err_ret: -1
+
+
+- name: creat
+  ret: "int"
+  ret_pos: ["fd", -1]
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+      can: ""
+    name: pathname
+    type: "const char *"
+  - flags:
+      read: ""
+    name: mode
+    type: "mode_t"
+  errs: [EACCES,EEXIST,EINTR,EINVAL,EIO,EISDIR,ELOOP,EMFILE,ENAMETOOLONG,ENFILE,ENFILE,ENOENT,ENOSR,ENOSPC,ENOTDIR,ENXIO,EOVERFLOW,EROFS,EAGAIN,ETXTBSY]
+  err_ret: -1
+
+- name: creat64
+  ret: "int"
+  ret_pos: ["fd", -1]
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+      can: ""
+    name: pathname
+    type: "const char *"
+
+  - flags:
+      read: ""
+    name: mode
+    type: "mode_t"
+  errs: [EACCES,EEXIST,EINTR,EINVAL,EIO,EISDIR,ELOOP,EMFILE,ENAMETOOLONG,ENFILE,ENFILE,ENOENT,ENOSR,ENOSPC,ENOTDIR,ENXIO,EOVERFLOW,EROFS,EAGAIN,ETXTBSY]
+  err_ret: -1
+
+
+- name: fclose
+  ret: "int"
+  ret_pos: [0, EOF]
+  fd_protect:
+    arg: "fp"
+    errno: "EBADF"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+    name: fp
+    type: "FILE *"
+  errs: [EAGAIN, EWOULDBLOCK, EBADF, EDESTADDRREQ, EDQOUT, EFAULT, EFBIG, EINTR, EINVAL, EIO, EIO, ENOSPC, EPIPE]
+  err_ret: EOF
+
+- name: fcloseall
+  ret: "int"
+  ret_pos: [0, EOF]
+  flags: [errinj]
+  args: []
+  errs: [EAGAIN, EWOULDBLOCK, EBADF, EDESTADDRREQ, EDQOUT, EFAULT, EFBIG, EINTR, EINVAL, EIO, EIO, ENOSPC, EPIPE]
+  err_ret: -1
+
+- name: fgetc
+  ret: "int"
+  ret_pos: ["(int) unsigned char", EOF]
+  flags: [buffer, input_char, errinj, log]
+  args:
+  - flags:
+      read: ""
+    name: stream
+    type: "FILE *"
+  errs: [EAGAIN,EBADF,EINTR,EIO,EOVERFLOW,ENOMEM,ENXIO]
+  err_ret: -1
+
+- name: fgets
+  ret: "char *"
+  ret_pos: ["s", "NULL"]
+  flags: [buffer, input_string, errinj, log]
+  args:
+  - flags: {}
+    name: s
+    type: "char *"
+
+  - flags:
+      read: ""
+    name: size
+    type: "int"
+
+  - flags:
+      read: ""
+    name: stream
+    type: "FILE *"
+  errs: [EBADF, EFAULT,EIO,EACCES,EFAULT,EIO,ELOOP,ENAMETOOLONG,ENOENT,ENOTDIR,EOVERFLOW,EINVAL,ENOTDIR,EAGAIN,EWOULDBLOCK,EBADF,EFAULT,EINTR,EINVAL,EIO,EISDIR, ENOMEM]
+  err_ret: "NULL"
+
+- name: fopen
+  ret: "FILE *"
+  ret_pos: ["FILE*", "NULL"]
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+      can: ""
+    name: path
+    type: "const char *"
+
+  - flags:
+      read: ""
+    name: mode
+    type: "const char *"
+  errs: [EINVAL, ENOMEM,EACCES,EEXIST,EINTR,EINVAL,EIO,EISDIR,ELOOP,EMFILE,ENAMETOOLONG,ENFILE,ENFILE,ENOENT,ENOSR,ENOSPC,ENOTDIR,ENXIO,EOVERFLOW,EROFS,EAGAIN,ETXTBSY]
+  err_ret: "NULL"
+
+- name: fopen64
+  ret: "FILE *"
+  ret_pos: ["FILE*", "NULL"]
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+      can: ""
+    name: path
+    type: "const char *"
+
+  - flags:
+      read: ""
+    name: mode
+    type: "const char *"
+  errs: [EINVAL, ENOMEM,EACCES,EEXIST,EINTR,EINVAL,EIO,EISDIR,ELOOP,EMFILE,ENAMETOOLONG,ENFILE,ENFILE,ENOENT,ENOSR,ENOSPC,ENOTDIR,ENXIO,EOVERFLOW,EROFS,EAGAIN,ETXTBSY]
+  err_ret: "NULL"
+
+
+- name: fputc
+  ret: "int"
+  ret_pos: ["(int) c", EOF]
+  flags: [buffer, output_char,errinj, log]
+  args:
+  - flags: {}
+    name: c
+    type: "int"
+
+  - flags:
+      read: ""
+    name: stream
+    type: "FILE *"
+  errs: [EAGAIN,EBADF,EFBIG,EFBIG,EINTR,EIO,ENOSPC,EPIPE,ENOMEM]
+  err_ret: EOF
+
+
+- name: fputs
+  ret: "int"
+  ret_pos: [">=0", EOF]
+  flags: [buffer, output_string, errinj, log]
+  args:
+  - flags: {}
+    name: s
+    type: "const char *"
+
+  - flags:
+      read: ""
+    name: stream
+    type: "FILE *"
+  errs: [EBADF, EAGAIN,EWOULDBLOCK,EBADF,EDESTADDRREQ,EDQUOT,EFBIG,EINT,EINVAL,EIO,ENOSPC,EPIPE]
+  err_ret: EOF
+
+
+- name: fread
+  ret: "size_t"
+  flags: [buffer, input_complex, log]
+  args:
+  - flags: {}
+    name: ptr
+    type: "void *"
+
+  - flags:
+      read: ""
+    name: size
+    type: "size_t"
+
+  - flags:
+      read: ""
+    name: nb
+    type: "size_t"
+
+  - flags:
+      read: ""
+    name: stream
+    type: "FILE *"
+  errs: [EAGAIN,EWOULDBLOCK,EBADF,EFAULT,EINTR,EINVAL,EIO,EISDIR]
+  err_ret: 0
+
+
+- name: freopen
+  ret: "FILE *"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+      can: ""
+    name: path
+    type: "const char *"
+
+  - flags:
+      read: ""
+    name: mode
+    type: "const char *"
+
+  - flags:
+      read: ""
+    name: stream
+    type: "FILE *"
+  errs: [EINVAL,EBADF,ENOMEM,EACCES,EEXIST,EINTR,EINVAL,EIO,EISDIR,ELOOP,EMFILE,ENAMETOOLONG,ENFILE,ENFILE,ENOENT,ENOSR,ENOSPC,ENOTDIR,ENXIO,EOVERFLOW,EROFS,EAGAIN,ETXTBSY,EAGAIN, EWOULDBLOCK, EBADF, EDESTADDRREQ, EDQOUT, EFAULT, EFBIG, EINTR, EINVAL, EIO, EIO, ENOSPC, EPIPE,EAGAIN,EWOULDBLOCK,EBADF,EDESTADDRREQ,EDQUOT,EFBIG,EINT,EINVAL,EIO,ENOSPC,EPIPE]
+  err_ret: "NULL"
+
+- name: freopen64
+  ret: "FILE *"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+      can: ""
+    name: filename
+    type: "const char *"
+
+  - flags:
+      read: ""
+    name: type
+    type: "const char *"
+
+  - flags:
+      read: ""
+    name: stream
+    type: "FILE *"
+  errs: [EINVAL,EBADF,ENOMEM,EACCES,EEXIST,EINTR,EINVAL,EIO,EISDIR,ELOOP,EMFILE,ENAMETOOLONG,ENFILE,ENFILE,ENOENT,ENOSR,ENOSPC,ENOTDIR,ENXIO,EOVERFLOW,EROFS,EAGAIN,ETXTBSY,EAGAIN, EWOULDBLOCK, EBADF, EDESTADDRREQ, EDQOUT, EFAULT, EFBIG, EINTR, EINVAL, EIO, EIO, ENOSPC, EPIPE,EAGAIN,EWOULDBLOCK,EBADF,EDESTADDRREQ,EDQUOT,EFBIG,EINT,EINVAL,EIO,ENOSPC,EPIPE]
+  err_ret: "NULL"
+
+- name: fwrite
+  ret: "size_t"
+  flags: [buffer, output_complex, log]
+  args:
+  - flags: {}
+    name: ptr
+    type: "const void *"
+
+  - flags:
+      read: ""
+    name: size
+    type: "size_t"
+
+  - flags:
+      read: ""
+    name: nb
+    type: "size_t"
+
+  - flags:
+      read: ""
+    name: stream
+    type: "FILE *"
+  errs: []
+  err_ret: 0
+
+- name: getc
+  ret: "int"
+  flags: [buffer, shorted]
+  real_call: "fgetc(stream)"
+  args:
+  - flags:
+      read: ""
+    name: stream
+    type: "FILE *"
+  errs: []
+  err_ret: -1
+
+- name: getchar
+  ret: "int"
+  real_call: "fgetc(stdin)"
+  flags: [buffer, shorted]
+  args: []
+  errs: []
+  err_ret: -1
+  
+- name: getline
+  ret: "__ssize_t"
+  flags: [buffer, input_special_getline, log, errinj]
+  args:
+  - flags: {}
+    name: lineptr
+    type: "char **"
+
+  - flags: {}
+    name: n
+    type: "size_t *"
+
+  - flags:
+      read: ""
+    name: stream
+    type: "FILE *"
+  errs: [EINVAL, EOVERFLOW, ENOMEM, EBADF, EFAULT,EIO,EACCES,EFAULT,EIO,ELOOP,ENAMETOOLONG,ENOENT,ENOTDIR,EOVERFLOW,EINVAL,ENOTDIR,EBADF, EFAULT,EIO,EACCES,EFAULT,EIO,ELOOP,ENAMETOOLONG,ENOENT,ENOTDIR,EOVERFLOW,EINVAL,ENOTDIR,EAGAIN,EWOULDBLOCK,EBADF,EFAULT,EINTR,EINVAL,EIO,EISDIR, ENOMEM]
+  err_ret: -1
+
+- name: putc
+  ret: "int"
+  real_call: "fputc(c, stream)"
+  flags: [buffer, shorted]
+  args:
+  - flags: {}
+    name: c
+    type: "int"
+
+  - flags:
+      read: ""
+    name: stream
+    type: "FILE *"
+  errs: []
+  err_ret: -1
+
+
+- name: putchar
+  ret: "int"
+  real_call: "fputc(c, stdout)"
+  flags: [buffer, shorted]
+  args:
+  - flags: {}
+    name: c
+    type: "int"
+  errs: []
+  err_ret: -1
+
+- name: puts
+  ret: "int"
+  real_call: "fputs(s, stdout)"
+  flags: [buffer,  shorted]
+  args:
+  - flags: {}
+    name: s
+    type: "const char *"
+  errs: [EBADF, EAGAIN,EWOULDBLOCK,EDESTADDRREQ,EDQUOT,EFBIG,EINT,EINVAL,EIO,ENOSPC,EPIPE]
+  err_ret: EOF
+
+- name: pread
+  ret: "ssize_t"
+  flags: [buffer, input_complex_byte, log]
+  args:
+  - flags:
+      read: ""
+    name: fd
+    type: "int"
+
+  - flags: {}
+    name: ptr
+    type: "void *"
+
+  - flags:
+      read: ""
+    name: nb
+    type: "size_t"
+
+  - flags:
+      read: ""
+    name: offset
+    type: "off_t"
+  errs: [EAGAIN, EBADF, EFAULT,EINTR,EINVAL,EIO,EISDIR,ENOBUFS,ENOMEM,ENXIO,ESPIPE]
+  err_ret: 0
+
+- name: pwrite
+  ret: "ssize_t"
+  flags: [buffer, output_complex_byte, log]
+  args:
+  - flags:
+      read: ""
+    name: fd
+    type: "int"
+
+  - flags: {}
+    name: ptr
+    type: "const void *"
+
+  - flags:
+      read: ""
+    name: nb
+    type: "size_t"
+
+  - flags:
+      read: ""
+    name: offset
+    type: "off_t"
+  errs: [EDQOUT, EFAULT,EINVAL,EAGAIN,EBADF,ECONNRESET,EFBIG,EINTR,EIO,ENETDOWN,ENETTUNREACH,ENOSPC,ENXIO,EPIPE,ESPIPE]
+  err_ret: -1
+
+- name: read
+  ret: "ssize_t"
+  flags: [buffer, input_complex_byte, log]
+  args:
+  - flags:
+      read: ""
+    name: fd
+    type: "int"
+
+  - flags: {}
+    name: ptr
+    type: "void *"
+
+  - flags:
+      read: ""
+    name: nb
+    type: "size_t"
+  errs: [EAGAIN,EWOULDBLOCK,EBADF,EFAULT,EINTR,EINVAL,EIO,EISDIR]
+  err_ret: 0
+
+- name: vfprintf
+  ret: "int"
+  flags: [buffer, output_format, log, placeontop]
+  args:
+  - flags:
+      read: ""
+    name: stream
+    type: "FILE *"
+
+  - flags: {}
+    name: format
+    type: "const char *"
+
+  - flags: {}
+    name: ap
+    type: "va_list"
+  errs: [EILSEQ,ENOMEM,EAGAIN,EWOULDBLOCK,EBADF,EDESTADDRREQ,EDQUOT,EFBIG,EINT,EINVAL,EIO,ENOSPC,EPIPE]
+  err_ret: -1
+
+- name: vdprintf
+  ret: "int"
+  flags: [buffer, output_format, log, placeontop]
+  args:
+  - flags:
+      read: ""
+    name: fd
+    type: "int"
+
+  - flags: {}
+    name: format
+    type: "const char *"
+
+  - flags: {}
+    name: ap
+    type: "va_list"
+  errs: [EILSEQ,ENOMEM,EAGAIN,EWOULDBLOCK,EBADF,EDESTADDRREQ,EDQUOT,EFBIG,EINT,EINVAL,EIO,ENOSPC,EPIPE]
+  err_ret: -1
+
+
+- name: vprintf
+  ret: "int"
+  real_call: "vfprintf(stdout, format, ap)"
+  flags: [buffer, shorted]
+  args:
+  - flags: {}
+    name: format
+    type: "const char *"
+
+  - flags: {}
+    name: ap
+    type: "va_list"
+  errs: []
+  err_ret: -1
+
+
+- name: vscanf
+  ret: "int"
+  real_call: "vfscanf(stdin, format, ap)"
+  flags: [buffer, shorted]
+  args:
+  - flags: {}
+    name: format
+    type: "const char *"
+
+  - flags: {}
+    name: ap
+    type: "va_list" 
+  errs: []
+  err_ret: -1
+
+
+- name: vfscanf
+  ret: "int"
+  flags: [buffer, input_format, log, nonauto]
+  args:
+  - flags:
+      read: ""
+    name: stream
+    type: "FILE *"
+
+  - flags: {}
+    name: format
+    type: "const char *"
+
+  - flags: {}
+    name: ap
+    type: "va_list"
+  errs: []
+  err_ret: -1
+
+
+- name: write
+  ret: "ssize_t"
+  flags: [buffer, input_complex_byte, log]
+  args:
+  - flags:
+      read: ""
+    name: fd
+    type: "int"
+
+  - flags: {}
+    name: ptr
+    type: "const void *"
+
+  - flags:
+      read: ""
+    name: nb
+    type: "size_t"
+  errs: [EAGAIN,EWOULDBLOCK,EBADF,EDESTADDRREQ,EDQUOT,EFBIG,EINT,EINVAL,EIO,ENOSPC,EPIPE]
+  err_ret: 0
+
+
+- name: __isoc99_vscanf
+  ret: "int"
+  real_call: "__isoc99_vfscanf(stdin, format, ap)"
+  flags: [buffer, shorted]
+  args:
+  - flags: {}
+    name: format
+    type: "const char *"
+
+  - flags: {}
+    name: ap
+    type: "va_list"
+  errs: []
+  err_ret: -1
+
+
+- name: __isoc99_vfscanf
+  ret: "int"
+  flags: [buffer, input_format, log, nonauto]
+  args:
+  - flags:
+      read: ""
+    name: stream
+    type: "FILE *"
+
+  - flags: {}
+    name: format
+    type: "const char *"
+
+  - flags: {}
+    name: ap
+    type: "va_list"
+  errs: [EAGAIN,EBADF,EILSEQ,EINTR,EINVAL,ENOMEM]
+  err_ret: -1
+
+
+- name: getc_unlocked
+  ret: "int"
+  real_call: "fgetc_unlocked(stream)"
+  flags: [buffer, shorted]
+  args:
+  - flags:
+      read: ""
+    name: stream
+    type: "FILE *"
+  errs: []
+  err_ret: -1
+
+
+- name: getchar_unlocked
+  ret: "int"
+  real_call: "fgetc_unlocked(stdin)"
+  flags: [buffer, shorted]
+  args: []
+  errs: []
+  err_ret: -1
+
+- name: putc_unlocked
+  ret: "int"
+  real_call: "fputc_unlocked(c, stream)"
+  flags: [buffer, shorted]
+  args:
+  - flags: {}
+    name: c
+    type: "int"
+
+  - flags:
+      read: ""
+    name: stream
+    type: "FILE *"
+  errs: []
+  err_ret: -1
+
+
+- name: putchar_unlocked
+  ret: "int"
+  real_call: "fputc_unlocked(c, stdin)"
+  flags: [buffer, shorted]
+  args:
+  - flags: {}
+    name: c
+    type: "int"
+  errs: []
+  err_ret: -1
+
+
+- name: fgetc_unlocked
+  ret: "int"
+  flags: [buffer,errinj, input_char, log, placeontop]
+  args:
+  - flags:
+      read: ""
+    name: stream
+    type: "FILE *"
+  errs: [EBADF,EINTR,EIO,EOVERFLOW,ENOMEM,ENXIO]
+  err_ret: -1
+
+- name: fputc_unlocked
+  ret: "int"
+  flags: [buffer,errinj, output_char, log, placeontop]
+  args:
+  - flags: {}
+    name: c
+    type: "int"
+
+  - flags:
+      read: ""
+    name: stream
+    type: "FILE *"
+  errs: [EBADF,EFBIG,EFBIG,EINTR,EIO,ENOSPC,EPIPE,ENOMEM]
+  err_ret: -1
+
+
+- name: fread_unlocked
+  ret: "size_t"
+  flags: [buffer, input_complex, log]
+  args:
+  - flags: {}
+    name: ptr
+    type: "void *"
+
+  - flags:
+      read: ""
+    name: size
+    type: "size_t"
+
+  - flags:
+      read: ""
+    name: nb
+    type: "size_t"
+
+  - flags:
+      read: ""
+    name: stream
+    type: "FILE *"
+  errs: [EAGAIN,EWOULDBLOCK,EBADF,EFAULT,EINTR,EINVAL,EIO,EISDIR]
+  err_ret: -1
+
+
+- name: fwrite_unlocked
+  ret: "size_t"
+  flags: [buffer, output_complex, log]
+  args:
+  - flags: {}
+    name: ptr
+    type: "const void *"
+
+  - flags:
+      read: ""
+    name: size
+    type: "size_t"
+
+  - flags:
+      read: ""
+    name: nb
+    type: "size_t"
+
+  - flags:
+      read: ""
+    name: stream
+    type: "FILE *"
+  errs: []
+  err_ret: -1
+
+- name: fgets_unlocked
+  ret: "char *"
+  flags: [buffer, errinj, input_string, log]
+  args:
+  - flags: {}
+    name: s
+    type: "char *"
+
+  - flags:
+      read: ""
+    name: n
+    type: "int"
+
+  - flags:
+      read: ""
+    name: stream
+    type: "FILE *"
+  errs: [EBADF, EFAULT,EIO,EACCES,EFAULT,EIO,ELOOP,ENAMETOOLONG,ENOENT,ENOTDIR,EOVERFLOW,EINVAL,ENOTDIR,EAGAIN,EWOULDBLOCK,EBADF,EFAULT,EINTR,EINVAL,EIO,EISDIR, ENOMEM]
+  err_ret: "NULL"
+
+- name: fputs_unlocked
+  ret: "int"
+  flags: [buffer, errinj, output_string, log]
+  args:
+  - flags: {}
+    name: s
+    type: "const char *"
+
+  - flags:
+      read: ""
+    name: stream
+    type: "FILE *"
+  errs: [EBADF, EAGAIN,EWOULDBLOCK,EBADF,EDESTADDRREQ,EDQUOT,EFBIG,EINT,EINVAL,EIO,ENOSPC,EPIPE]
+  err_ret: EOF
+
+
+- name: fseek
+  ret: "int"
+  flags: [buffer, errinj]
+  args:
+  - flags:
+      read: ""
+    name: stream
+    type: "FILE *"
+
+  - flags:
+      read: ""
+    name: offset
+    type: "long"
+
+  - flags:
+      read: ""
+    name: whence
+    type: "int"
+  errs: [EBADF, EINVAL, EOVERFLOW,ESPIPE, ENOMEM]
+  err_ret: -1
+
+
+- name: fseeko
+  ret: "int"
+  flags: [buffer, errinj]
+  args:
+  - flags:
+      read: ""
+    name: stream
+    type: "FILE *"
+
+  - flags:
+      read: ""
+    name: offset
+    type: "off_t"
+
+  - flags:
+      read: ""
+    name: whence
+    type: "int"
+  errs: [EBADF, EINVAL, EOVERFLOW,ESPIPE, ENOMEM]
+  err_ret: -1
+
+- name: fsetpos
+  ret: "int"
+  flags: [buffer, errinj]
+  args:
+  - flags:
+      read: ""
+    name: stream
+    type: "FILE *"
+
+  - flags: {}
+    name: pos
+    type: "const fpos_t *"
+  errs: [EBADF, EINVAL, EOVERFLOW,ESPIPE, ENOMEM]
+  err_ret: -1
+
+
+- name: fsetpos64
+  ret: "int"
+  flags: [buffer, errinj]
+  args:
+  - flags:
+      read: ""
+    name: stream
+    type: "FILE *"
+
+  - flags: {}
+    name: pos
+    type: "const fpos64_t *"
+  errs: [EBADF, EINVAL, EOVERFLOW,ESPIPE, ENOMEM]
+  err_ret: -1
+
+
+- name: lseek
+  ret: "off_t"
+  flags: [buffer, errinj]
+  args:
+  - flags:
+      read: ""
+    name: fd
+    type: "int"
+
+  - flags:
+      read: ""
+    name: offset
+    type: "off_t"
+
+  - flags:
+      read: ""
+    name: whence
+    type: "int"
+  errs: [EBADF,EINVAL,EOVERFLOW,ESPIPE]
+  err_ret: "(off_t) -1"
+
+
+- name: lseek64
+  ret: "off64_t"
+  flags: [buffer, errinj]
+  args:
+  - flags:
+      read: ""
+    name: fd
+    type: "int"
+
+  - flags:
+      read: ""
+    name: offset
+    type: "off64_t"
+
+  - flags:
+      read: ""
+    name: whence
+    type: "int"
+  errs: [EBADF,EINVAL,EOVERFLOW,ESPIPE]
+  err_ret: "(off_t) -1"
+
+
+- name: rewind
+  ret: "void"
+  flags: [buffer, errinj, nogen]
+  args:
+  - flags:
+      read: ""
+    name: stream
+    type: "FILE *"
+  errs: []
+  err_ret: 0
+
+- name: chmod
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+      can: ""
+    name: path
+    type: "const char *"
+
+  - flags:
+      read: ""
+    name: mode
+    type: "mode_t"
+  errs: [EACCESS, EFAULT, EIO, ELOOP, ENAMETOOLONG, ENOENT, ENOMEM, ENOTDIR, EPERM, EROFS,EBADF]
+  err_ret: -1
+
+- name: chown
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+      can: ""
+    name: path
+    type: "const char *"
+
+  - flags:
+      read: ""
+    name: owner
+    type: "uid_t"
+
+  - flags:
+      read: ""
+    name: group
+    type: "gid_t"
+  errs: [EACCESS, EFAULT, EIO, ELOOP, ENAMETOOLONG, ENOENT, ENOMEM, ENOTDIR, EPERM, EROFS,EBADF]
+  err_ret: -1
+
+- name: fchmod
+  ret: "int"
+  flags: [buffer, errinj]
+  args:
+  - flags:
+      read: ""
+    name: fd
+    type: "int"
+
+  - flags:
+      read: ""
+    name: mode
+    type: "mode_t"
+  errs: [EBADF,EPERM,EROFS, EINTR,EINVAL]
+  err_ret: -1
+
+- name: fchown
+  ret: "int"
+  flags: [buffer, errinj]
+  args:
+  - flags:
+      read: ""
+    name: fd
+    type: "int"
+
+  - flags:
+      read: ""
+    name: owner
+    type: "uid_t"
+
+  - flags:
+      read: ""
+    name: group
+    type: "gid_t"
+  errs: [EBADF,EPERM,EROFS,EIO, EINTR,EINVAL]
+  err_ret: -1
+
+- name: lchown
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+      abs: ""
+    name: path
+    type: "const char *"
+
+  - flags:
+      read: ""
+    name: owner
+    type: "uid_t"
+
+  - flags:
+      read: ""
+    name: group
+    type: "gid_t"
+  errs: [EACCESS, EFAULT, EIO, ELOOP, ENAMETOOLONG, ENOENT, ENOMEM, ENOTDIR, EPERM, EROFS,EBADF]
+  err_ret: -1
+
+- name: dup
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+    name: oldfd
+    type: "int"
+  errs: [EBADF,EINTR,EMFILE]
+  err_ret: -1
+
+
+- name: dup2
+  ret: "int"
+  fd_protect:
+    arg: "newfd"
+    errno: "EBADF"
+  flags: [fdprotect, errinj]
+  args:
+  - flags:
+      read: ""
+    name: oldfd
+    type: "int"
+
+  - flags:
+      read: ""
+    name: newfd
+    type: "int"
+  errs: [EBADF,EINTR,EMFILE]
+  err_ret: -1
+
+
+- name: dup3
+  ret: "int"
+  fd_protect:
+    arg: "newfd"
+    errno: "EBADF"
+  flags: [fdprotect, errinj]
+  args:
+  - flags:
+      read: ""
+    name: oldfd
+    type: "int"
+
+  - flags:
+      read: ""
+    name: newfd
+    type: "int"
+
+  - flags:
+      read: ""
+    name: flags
+    type: "int"
+  errs: [EBADF,EINTR,EMFILE]
+  err_ret: -1
+
+- name: ftruncate
+  ret: "int"
+  flags: [buffer, errinj]
+  args:
+  - flags:
+      read: ""
+    name: fd
+    type: "int"
+
+  - flags:
+      read: ""
+    name: length
+    type: "off_t"
+  errs: [EBADF,EFBIG,EINVAL, EINTR,EIO]
+  err_ret: -1
+
+- name: ftruncate64
+  ret: "int"
+  flags: [buffer, errinj]
+  args:
+  - flags:
+      read: ""
+    name: fd
+    type: "int"
+
+  - flags:
+      read: ""
+    name: length
+    type: "off64_t"
+  errs: [EBADF,EFBIG,EINVAL, EINTR,EIO]
+  err_ret: -1
+
+
+- name: link
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+      abs: ""
+    name: path1
+    type: "const char *"
+
+  - flags:
+      read: ""
+      can: ""
+    name: path2
+    type: "const char *"
+  errs: [EACCES,EDQUOT,EEXIST,EFAULT,EIO,ELOOP,EMLINK,ENAMETOOLONG,ENOENT,ENOMEM,ENOSPC,ENOTDIR,EPERM,EROFS,EXDEV]
+  err_ret: -1
+
+- name: mkdir
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+      can: ""
+    name: pathname
+    type: "const char *"
+  - flags:
+      read: ""
+    name: mode
+    type: "mode_t"
+  errs: [EACCES,EEXIST,ELOOP,EMLINK,ENAMETOOLONG,ENOENT,ENOSPC,ENOTDIR,EROFS]
+  err_ret: -1
+
+
+- name: mkfifo
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+      can: ""
+    name: pathname
+    type: "const char *"
+
+  - flags:
+      read: ""
+    name: mode
+    type: "mode_t"
+  errs: [EACCES,EEXIST,ELOOP,EDQUOT,ENAMETOOLONG,ENOENT,ENOSPC,ENOTDIR,EROFS]
+  err_ret: -1
+
+
+- name: __xmknod
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags: {}
+    name: __ver
+    type: "int"
+
+  - flags:
+      read: ""
+      can: ""
+    name: pathname
+    type: "const char *"
+
+  - flags:
+      read: ""
+    name: mode
+    type: "mode_t"
+
+  - flags: {}
+    name: dev
+    type: "dev_t*"
+  errs: [EACCES,EDQUOT,EEXIST,EFAULT,EINVAL,ELOOP,ENAMETOOLONG,ENOENT,ENOMEM,ENOSPC,ENOTDIR,EPERM]
+  err_ret: -1
+
+
+- name: remove
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+      abs: ""
+    name: pathname
+    type: "const char *"
+  errs: [EACCES,EEXIST,ELOOP,ENOMEM,ENAMETOOLONG,ENOENT,ENOSPC,ENOTDIR,EROFS,EINVAL]
+  err_ret: -1
+
+
+
+- name: rename
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+      abs: ""
+    name: oldpath
+    type: "const char *"
+
+  - flags:
+      read: ""
+      can: ""
+    name: newpath
+    type: "const char *"
+  errs: [EACCES,EBUSY,EDQUOT,EFAULT,EINVAL,EISDIR,ELOOP,EMLINK,ENAMETOOLONG,ENOENT,ENOMEM,ENOSPC,ENOTDIR,ENOTEMPTY,EEXIST,EPERM,EROFS,EXDEV]
+  err_ret: -1
+
+  
+- name: rmdir
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+      can: ""
+    name: pathname
+    type: "const char *"
+  errs: [EACCES,EBUSY,EFAULT,EINVAL,ELOOP,ENAMETOOLONG,ENOENT,ENOMEM,ENOTDIR,ENOTEMPTY,EPERM,EROFS]
+  err_ret: -1
+
+  
+- name: symlink
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+      can: ""
+    name: oldpath
+    type: "const char *"
+
+  - flags:
+      read: ""
+      abs: ""
+    name: newpath
+    type: "const char *"
+  errs: [EACCES,EEXIST,EIO,ELOOP,ENAMETOOLONG,ENOENT,ENOSPC,ENOTDIR,EROFS,ELOOP,ENAMETOOLONG]
+  err_ret: -1
+
+
+
+- name: system
+  ret: "int"
+  flags: [nogen,errinj]
+  args:
+  - flags:
+      read: ""
+    name: command
+    type: "const char *"
+  errs: []
+  errs_also: ""
+  err_ret: -1
+
+- name: truncate
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+      can: ""
+    name: path
+    type: "const char *"
+
+  - flags:
+      read: ""
+    name: length
+    type: "off_t"
+  errs: [EACCES,EFAULT,EISDIR,ELOOP,ENAMETOOLONG,ENOENT,ENOTDIR,EROFS,ETXTBSY,EFBIG,EINTR,EIO]
+  err_ret: -1
+  
+
+- name: truncate64
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+      can: ""
+    name: path
+    type: "const char *"
+
+  - flags:
+      read: ""
+    name: length
+    type: "off64_t"
+  errs: [EACCES,EFAULT,EISDIR,ELOOP,ENAMETOOLONG,ENOENT,ENOTDIR,EROFS,ETXTBSY,EFBIG,EINTR,EIO]
+  err_ret: -1
+
+
+- name: unlink
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+      abs: ""
+    name: pathname
+    type: "const char *"
+  errs: [EACCES,EBUSY,ELOOP,ENAMETOOLONG,ENOENT,ENOTDIR,EROFS,EBADF,ENOTDIR,EEXIST,ENOTEMPTY,ENOTDIR,EBUSY,ELOOP,ENAMETOOLONG,ETXTBSY,EINVAL]
+  err_ret: -1
+
+
+- name: umask
+  ret: "mode_t"
+  flags: [nogen]
+  args:
+  - flags:
+      read: ""
+    name: mask
+    type: "mode_t"
+  errs: [EACCES,EBUSY,ELOOP,ENAMETOOLONG,ENOENT,ENOTDIR,EPERM,EROFS,EBUSY,ELOOP,ENAMETOOLONG,ETXTBSY]
+  err_ret: -1
+  
+- name: utime
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+      can: ""
+    name: filename
+    type: "const char *"
+
+  - flags: {}
+    name: times
+    type: "const struct utimbuf *"
+  errs: [EACCES, ENOENT, EPERM,EROFS]
+  err_ret: -1
+
+- name: popen
+  ret: "FILE *"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+    name: command
+    type: "const char *"
+
+  - flags:
+      read: ""
+    name: type
+    type: "const char *"
+  errs: [EAGAIN,ENOMEM, ECHILD,EFAULT,EINVAL,EMFILE,ENFILE]
+  err_ret: "NULL"
+
+- name: pclose
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+    name: stream
+    type: "FILE *"
+  errs: [ECHILD]
+  err_ret: -1
+
+
+- name: mkstemp
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+      can: ""
+    name: templ
+    type: "char *"
+  errs: [EEXIST,EINVAL]
+  err_ret: -1
+
+
+- name: mkostemp
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+      can: ""
+    name: templ
+    type: "char *"
+
+  - flags:
+      read: ""
+    name: flags
+    type: "int"
+  errs: [EEXIST,EINVAL]
+  err_ret: -1
+
+
+- name: mkstemps
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+      can: ""
+    name: templ
+    type: "char *"
+
+  - flags: {}
+    name: suffixlen
+    type: "int"
+  errs: [EEXIST,EINVAL]
+  err_ret: -1
+
+
+- name: mkostemps
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+      can: ""
+    name: templ
+    type: "char *"
+
+  - flags: {}
+    name: suffixlen
+    type: "int"
+
+  - flags:
+      read: ""
+    name: flags
+    type: "int"
+  errs: [EEXIST,EINVAL]
+  err_ret: -1
+
+
+- name: tmpfile
+  ret: "FILE *"
+  flags: [errinj]
+  args: []
+  errs: [EACCES,EEXIST,EINTR,EMFILE,ENFILE,ENOSPC,EROFS]
+  err_ret: "NULL"
+
+- name: tmpfile64
+  ret: "FILE *"
+  flags: [errinj]
+  args: []
+  errs: [EACCES,EEXIST,EINTR,EMFILE,ENFILE,ENOSPC,EROFS]
+  err_ret: "NULL"
+
+- name: __fxstat
+  ret: "int"
+  flags: [buffer, errinj]
+  args:
+  - flags: {}
+    name: __ver
+    type: "int"
+
+  - flags:
+      read: ""
+    name: fd
+    type: "int"
+
+  - flags: {}
+    name: buf
+    type: "struct stat *"
+  errs: [EACCES, EBADF,EFAULT,ELOOP,ENAMETOOLONG,ENOENT,ENOMEM,ENOTDIR,EOVERFLOW]
+  err_ret: -1
+
+
+- name: __fxstat64
+  ret: "int"
+  flags: [buffer, errinj]
+  args:
+  - flags: {}
+    name: __ver
+    type: "int"
+
+  - flags:
+      read: ""
+    name: fd
+    type: "int"
+
+  - flags: {}
+    name: buf
+    type: "struct stat64 *"
+  errs: [EACCES, EBADF,EFAULT,ELOOP,ENAMETOOLONG,ENOENT,ENOMEM,ENOTDIR,EOVERFLOW]
+  err_ret: -1
+
+
+- name: __lxstat
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags: {}
+    name: __ver
+    type: "int"
+
+  - flags:
+      read: ""
+      abs: ""
+    name: path
+    type: "const char *"
+
+  - flags: {}
+    name: buf
+    type: "struct stat *"
+  errs: [EACCES, EBADF,EFAULT,ELOOP,ENAMETOOLONG,ENOENT,ENOMEM,ENOTDIR,EOVERFLOW]
+  err_ret: -1
+
+
+- name: __lxstat64
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags: {}
+    name: __ver
+    type: "int"
+
+  - flags:
+      read: ""
+      abs: ""
+    name: path
+    type: "const char *"
+
+  - flags: {}
+    name: buf
+    type: "struct stat64 *"
+  errs: [EACCES, EBADF,EFAULT,ELOOP,ENAMETOOLONG,ENOENT,ENOMEM,ENOTDIR,EOVERFLOW]
+  err_ret: -1
+
+
+- name: __xstat
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags: {}
+    name: __ver
+    type: "int"
+
+  - flags:
+      read: ""
+      can: ""
+    name: path
+    type: "const char *"
+
+  - flags: {}
+    name: buf
+    type: "struct stat *"
+  errs: [EACCES, EBADF,EFAULT,ELOOP,ENAMETOOLONG,ENOENT,ENOMEM,ENOTDIR,EOVERFLOW]
+  err_ret: -1
+
+
+- name: __xstat64
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags: {}
+    name: __ver
+    type: "int"
+
+  - flags:
+      read: ""
+      can: ""
+    name: path
+    type: "const char *"
+
+  - flags: {}
+    name: buf
+    type: "struct stat64 *"
+  errs: [EACCES, EBADF,EFAULT,ELOOP,ENAMETOOLONG,ENOENT,ENOMEM,ENOTDIR,EOVERFLOW]
+  err_ret: -1
+
+
+- name: chdir
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+      can: ""
+    name: path
+    type: "const char *"
+  errs: [EACCES,ELOOP,ENAMETOOLONG,ENOENT,ENOTDIR,ELOOP,ENAMETOOLONG]
+  err_ret: -1
+
+
+- name: fchdir
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+    name: fd
+    type: "int"
+  errs: [EACCES, EIO,EFAULT,ELOOP,ENAMETOOLONG,ENOENT,ENOMEM,ENOTDIR]
+  err_ret: -1
+
+
+- name: killpg
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+    name: pgrp
+    type: "int"
+
+  - flags:
+      read: ""
+    name: sig
+    type: "int"
+  errs: [EINVAL,EPERM,ESRCH]
+  err_ret: -1
+
+
+- name: seteuid
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+    name: euid
+    type: "uid_t"
+  errs: [EINVAL,EPERM]
+  err_ret: -1
+
+- name: setegid
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+    name: egid
+    type: "gid_t"
+  errs: [EINVAL,EPERM]
+  err_ret: -1
+
+
+- name: setgid
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+    name: gid
+    type: "gid_t"
+  errs: [EINVAL,EPERM]
+  err_ret: -1
+
+
+- name: setreuid
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+    name: ruid
+    type: "uid_t"
+
+  - flags:
+      read: ""
+    name: euid
+    type: "uid_t"
+  errs: [EINVAL,EPERM]
+  err_ret: -1
+
+
+- name: setregid
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+    name: rgid
+    type: "gid_t"
+
+  - flags:
+      read: ""
+    name: egid
+    type: "gid_t"
+  errs: [EINVAL,EPERM]
+  err_ret: -1
+
+
+- name: setuid
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+    name: uid
+    type: "uid_t"
+  errs: [EINVAL,EPERM]
+  err_ret: -1
+
+- name: clearenv
+  ret: "int"
+  flags: [errinj]
+  args: []
+  errs: [ENOMEM]
+  err_ret: -1
+
+- name: putenv
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+    name: string
+    type: "char *"
+  errs: [ENOMEM]
+  err_ret: -1
+
+
+- name: setenv
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+    name: name
+    type: "const char *"
+
+  - flags:
+      read: ""
+    name: value
+    type: "const char *"
+
+  - flags:
+      read: ""
+    name: overwrite
+    type: "int"
+  errs: [EINVAL,ENOMEM]
+  err_ret: -1
+
+
+- name: unsetenv
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+    name: name
+    type: "const char *"
+  errs: [EINVAL,ENOMEM]
+  err_ret: -1
+
+
+- name: open
+  ret: "int"
+  flags: [open,errinj]
+  args: "const char *pathname, int flags, ..."
+  errs: [EACCES,EEXIST,EINTR,EINVAL,EIO,EISDIR,ELOOP,EMFILE,ENAMETOOLONG,ENFILE,ENFILE,ENOENT,ENOSR,ENOSPC,ENOTDIR,ENXIO,EOVERFLOW,EROFS,EAGAIN,ETXTBSY]
+  err_ret: -1
+
+- name: open64
+  ret: "int"
+  flags: [open,errinj]
+  args: "const char *pathname, int flags, ..."
+  errs: [EACCES,EEXIST,EINTR,EINVAL,EIO,EISDIR,ELOOP,EMFILE,ENAMETOOLONG,ENFILE,ENFILE,ENOENT,ENOSR,ENOSPC,ENOTDIR,ENXIO,EOVERFLOW,EROFS,EAGAIN,ETXTBSY]
+  err_ret: -1
+
+- name: printf
+  ret: "int"
+  real_func: "vprintf"
+  flags: [vararg, nofnptr, buffer]
+  args: 
+  - flags: {}
+    name: "format"
+    type: "const char *"
+  errs: []
+  err_ret: -1
+
+- name: scanf
+  ret: "int"
+  real_func: "vscanf"
+  flags: [vararg, nofnptr, buffer]
+  args: 
+  - flags: {}
+    name: "format"
+    type: "const char *"
+  errs: []
+  err_ret: -1
+
+- name: fprintf
+  ret: "int"
+  real_func: "vfprintf"
+  flags: [vararg, nofnptr, buffer]
+  args: 
+  - flags:
+      read: ""
+    name: stream
+    type: "FILE *"
+
+  - flags: {}
+    name: "format"
+    type: "const char *"
+  errs: []
+  err_ret: -1
+
+
+- name: dprintf
+  ret: "int"
+  real_func: "vdprintf"
+  flags: [vararg, nofnptr, buffer]
+  args:
+  - flags:
+      read: ""
+    name: fd
+    type: "int"
+
+  - flags: {}
+    name: "format"
+    type: "const char *"
+  errs: []
+  err_ret: -1
+
+- name: fscanf
+  ret: "int"
+  real_func: "vfscanf"
+  flags: [vararg, nofnptr, buffer]
+  args: 
+  - flags:
+      read: ""
+    name: stream
+    type: "FILE *"
+
+  - flags: {}
+    name: "format"
+    type: "const char *"
+  errs: [EAGAIN,EBADF,EILSEQ,EINTR,EINVAL,ENOMEM,ERANGE]
+  err_ret: -1
+
+- name: __isoc99_scanf
+  ret: "int"
+  real_func: "__isoc99_vscanf"
+  flags: [vararg, nofnptr, buffer]
+  args: 
+  - flags: {}
+    name: "format"
+    type: "const char *"
+  errs: []
+  err_ret: -1
+
+- name: __isoc99_fscanf
+  ret: "int"
+  real_func: "__isoc99_vfscanf"
+  flags: [vararg, nofnptr, buffer]
+  args: 
+  - flags:
+      read: ""
+    name: stream
+    type: "FILE *"
+
+  - flags: {}
+    name: "format"
+    type: "const char *"
+  errs: []
+  err_ret: -1
+
+
+- name: socket
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+    name: domain
+    type: "int"
+
+  - flags:
+      read: ""
+    name: type
+    type: "int"
+
+  - flags:
+      read: ""
+    name: protocol
+    type: "int"
+  errs: [EACCES,EAFNOSUPORT,EINVAL,EMFILE,ENFILE,ENOBUFS,ENOMEM,EPROTONOSUPPORT]
+  err_ret: -1
+
+- name: accept
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+    name: sockfd
+    type: "int"
+
+  - flags: {}
+    name: addr
+    type: "struct sockaddr *"
+
+  - flags: {}
+    name: addrlen
+    type: "socklen_t *"
+  errs: [EAGAIN,EWOULDBLOCK,EBADF,ECONNABORTED,EFAULT,EINTR,EINVAL,EMFILE,ENFILE,ENOBUFS,ENOMEM,ENOTSUCK,EOPNOTSUPP,EPROTO]
+  err_ret: -1
+
+
+- name: pipe
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+      rwpair: ""
+    name: pipefd
+    type: "int"
+    dims: "[2]"
+  errs: [EFAULT,EINVAL,EMFILE,ENFILE]
+  err_ret: -1
+
+- name: pipe2
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+      rwpair: ""
+    name: pipefd
+    type: "int"
+    dims: "[2]"
+
+  - flags:
+      read: ""
+    name: flags
+    type: "int"
+  errs: [EFAULT,EINVAL,EMFILE,ENFILE]
+  err_ret: -1
+  
+  
+- name: socketpair
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+    name: domain
+    type: "int"
+
+  - flags:
+      read: ""
+    name: type
+    type: "int"
+
+  - flags:
+      read: ""
+    name: protocol
+    type: "int"
+
+  - flags:
+      read: ""
+      rwpair: ""
+    name: sv
+    type: "int"
+    dims: "[2]"
+  errs: [EAFNOSUPPORT, EFAULT,EMFILE,ENFILE,EOPNOTSUPP,EPROTONOSUPPORT]
+  err_ret: -1
+
+- name: execl
+  ret: "int"
+  flags: [nogen]
+  args: "const char *path, const char *arg, ..."
+  errs: []
+  err_ret: -1
+  
+- name: execlp
+  ret: "int"
+  flags: [nogen]
+  args: "const char *file, const char *arg, ..."
+  errs: []
+  err_ret: -1
+  
+- name: execle
+  ret: "int"
+  flags: [nogen]
+  args: "const char *path, const char *arg"
+  errs: []
+  err_ret: -1
+  
+- name: execv
+  ret: "int"
+  flags: [nogen]
+  args: "const char *path, char *const argv[]"
+  errs: []
+  err_ret: -1
+  
+- name: execvp
+  ret: "int"
+  flags: [nogen]
+  args: "const char *file, char *const argv[]"
+  errs: []
+  err_ret: -1
+  
+- name: execvpe
+  ret: "int"
+  flags: [nogen]
+  args: "const char *file, char *const argv[], char *const envp[]"
+  errs: []
+  err_ret: -1
+  
+- name: execve
+  ret: "int"
+  flags: [nogen]
+  args: "const char *filename, char *const argv[], char *const envp[]"
+  errs: []
+  err_ret: -1
+  
+- name: fexecve
+  ret: "int"
+  flags: [nogen]
+  args: "int fd, char *const argv[], char *const envp[]"
+  errs: []
+  err_ret: -1
+  
+- name: fork
+  ret: "pid_t"
+  flags: [nogen]
+  args: []
+  errs: [EAGAIN,ENOMEM,ENOSYS]
+  err_ret: 0
+
+- name: dlopen
+  ret: "void*"
+  flags: [nogen]
+  args: "const char * filename, int flag"
+  errs: []
+  err_ret: "NULL"
+
+- name: signal
+  ret: "sighandler_t"
+  flags: [nogen]
+  args: "int signum, sighandler_t real_handler"
+  errs: []
+  err_ret: "(sighandler_t) NULL"
+
+- name: sigaction
+  ret: "int"
+  flags: [nogen]
+  args: "int signum, const struct sigaction *act, struct sigaction *oldact"
+  errs: []
+
+- name: _exit
+  ret: "void"
+  flags: [nogen]
+  args: "int status"
+  errs: []
+  err_ret: 0
+
+- name: _Exit
+  ret: "void"
+  flags: [nogen]
+  args: "int status"
+  errs: []
+  err_ret: 0
+
+- name: pthread_create
+  ret: "int"
+  flags: [nogen]
+  args: "pthread_t *thread, const pthread_attr_t *attr, void *(*start_routine) (void *), void *arg"
+  errs: []
+  err_ret: -1
+
+- name: pthread_exit
+  ret: "void"
+  flags: [nogen]
+  args: "void *retval"
+  errs: []
+  err_ret: 0
+  
+- name: sigset
+  ret: "sighandler_t"
+  flags: [nogen]
+  args: "int sig, sighandler_t disp"
+  errs: []
+  err_ret: "(sighandler_t) NULL"
+
+- name: sigignore
+  ret: "int"
+  flags: [nogen]
+  args: "int sig"
+  errs: []
+  err_ret: -1
+
+- name: fcntl
+  ret: "int"
+  flags: [nogen]
+  args: "int fildes, int cmd, ..."
+  errs: []
+  err_ret: -1
+
+- name: _IO_getc
+  ret: "int"
+  real_call: "getc(stream)"
+  flags: [buffer, shorted]
+  args:
+  - flags:
+      read: ""
+    name: stream
+    type: "FILE *"
+  errs: []
+  err_ret: -1
+
+
+- name: _IO_putc
+  ret: "int"
+  real_call: "putc(c, stream)"
+  flags: [buffer, shorted]
+  args:
+  - flags: {}
+    name: c
+    type: "int"
+
+  - flags:
+      read: ""
+    name: stream
+    type: "FILE *"
+  errs: []
+  err_ret: -1
+
+- name: _IO_puts
+  ret: "int"
+  real_call: "puts(s)"
+  flags: [buffer, shorted]
+  args:
+  - flags: {}
+    name: s
+    type: "const char *"
+  errs: []
+  err_ret: EOF
+
+- name: __fprintf_chk
+  ret: "int"
+  real_func: "__vfprintf_chk"
+  flags: [vararg, nofnptr, buffer]
+  args: 
+  - flags:
+      read: ""
+    name: stream
+    type: "FILE *"
+
+  - flags: {}
+    name: flag
+    type: "int"
+
+  - flags: {}
+    name: "format"
+    type: "const char *"
+  errs: []
+  err_ret: -1
+
+- name: __vfprintf_chk
+  ret: "int"
+  flags: [buffer, output_format, log, placeontop]
+  args:
+  - flags:
+      read: ""
+    name: stream
+    type: "FILE *"
+
+  - flags: {}
+    name: flag
+    type: "int"
+
+  - flags: {}
+    name: format
+    type: "const char *"
+
+  - flags: {}
+    name: ap
+    type: "va_list"
+  errs: [EILSEQ,ENOMEM,EAGAIN,EWOULDBLOCK,EBADF,EDESTADDRREQ,EDQUOT,EFBIG,EINT,EINVAL,EIO,ENOSPC,EPIPE]
+  err_ret: -1
+
+
+- name: __fgets_chk
+  ret: "char *"
+  flags: [buffer, errinj, input_string, log]
+  args:
+  - flags: {}
+    name: s
+    type: "char *"
+
+  - flags:
+      read: ""
+    name: size
+    type: "size_t"
+
+  - flags:
+      read: ""
+    name: strsize
+    type: "int"
+
+  - flags:
+      read: ""
+    name: stream
+    type: "FILE *"
+  errs: [EBADF, EFAULT,EIO,EACCES,EFAULT,EIO,ELOOP,ENAMETOOLONG,ENOENT,ENOTDIR,EOVERFLOW,EINVAL,ENOTDIR,EAGAIN,EWOULDBLOCK,EBADF,EFAULT,EINTR,EINVAL,EIO,EISDIR, ENOMEM]
+  err_ret: "NULL"
+
+
+
+- name: __fgets_unlocked_chk
+  ret: "char *"
+  flags: [buffer,errinj, input_string, log]
+  args:
+  - flags: {}
+    name: s
+    type: "char *"
+
+  - flags:
+      read: ""
+    name: size
+    type: "size_t"
+
+  - flags:
+      read: ""
+    name: strsize
+    type: "int"
+
+  - flags:
+      read: ""
+    name: stream
+    type: "FILE *"
+  errs: [EBADF, EFAULT,EIO,EACCES,EFAULT,EIO,ELOOP,ENAMETOOLONG,ENOENT,ENOTDIR,EOVERFLOW,EINVAL,ENOTDIR,EAGAIN,EWOULDBLOCK,EBADF,EFAULT,EINTR,EINVAL,EIO,EISDIR, ENOMEM]
+  err_ret: "NULL"
+
+
+
+- name: __fgetws_chk
+  ret: "wchar_t *"
+  flags: [buffer, errinj, input_ws, log]
+  args:
+  - flags: {}
+    name: ws
+    type: "wchar_t *"
+
+  - flags:
+      read: ""
+    name: size
+    type: "size_t"
+
+  - flags:
+      read: ""
+    name: strsize
+    type: "int"
+
+  - flags:
+      read: ""
+    name: stream
+    type: "FILE *"
+  errs: [EBADF, EFAULT,EIO,EACCES,EFAULT,EIO,ELOOP,ENAMETOOLONG,ENOENT,ENOTDIR,EOVERFLOW,EINVAL,ENOTDIR,EAGAIN,EWOULDBLOCK,EBADF,EFAULT,EINTR,EINVAL,EIO,EISDIR, ENOMEM]
+  err_ret: "NULL"
+
+
+
+- name: __fgetws_unlocked_chk
+  ret: "wchar_t *"
+  flags: [buffer, errinj, input_ws, log]
+  args:
+  - flags: {}
+    name: ws
+    type: "wchar_t *"
+
+  - flags:
+      read: ""
+    name: strsize
+    type: "size_t"
+
+  - flags:
+      read: ""
+    name: n
+    type: "int"
+
+  - flags:
+      read: ""
+    name: stream
+    type: "FILE *"
+  errs: [EBADF, EFAULT,EIO,EACCES,EFAULT,EIO,ELOOP,ENAMETOOLONG,ENOENT,ENOTDIR,EOVERFLOW,EINVAL,ENOTDIR,EAGAIN,EWOULDBLOCK,EBADF,EFAULT,EINTR,EINVAL,EIO,EISDIR, ENOMEM]
+  err_ret: "NULL"
+
+
+- name: __pread64_chk
+  ret: "ssize_t"
+  flags: [buffer, input_complex_byte, log]
+  args:
+  - flags:
+      read: ""
+    name: fd
+    type: "int"
+
+  - flags: {}
+    name: ptr
+    type: "void *"
+
+  - flags:
+      read: ""
+    name: nb
+    type: "size_t"
+
+  - flags:
+      read: ""
+    name: offset
+    type: "off64_t"
+
+  - flags:
+      read: ""
+    name: buflen
+    type: "size_t"
+  errs: [EAGAIN, EBADF, EFAULT,EINTR,EINVAL,EIO,EISDIR,ENOBUFS,ENOMEM,ENXIO,ESPIPE]
+  err_ret: -1
+
+- name: __pread_chk
+  ret: "ssize_t"
+  flags: [buffer, input_complex_byte, log]
+  args:
+  - flags:
+      read: ""
+    name: fd
+    type: "int"
+
+  - flags: {}
+    name: ptr
+    type: "void *"
+
+  - flags:
+      read: ""
+    name: nb
+    type: "size_t"
+
+  - flags:
+      read: ""
+    name: offset
+    type: "off_t"
+
+  - flags:
+      read: ""
+    name: buflen
+    type: "size_t"
+  errs: [EAGAIN, EBADF, EFAULT,EINTR,EINVAL,EIO,EISDIR,ENOBUFS,ENOMEM,ENXIO,ESPIPE]
+  err_ret: -1
+
+
+- name: __read_chk
+  ret: "ssize_t"
+  flags: [buffer, input_complex_byte, log]
+  args:
+  - flags:
+      read: ""
+    name: fd
+    type: "int"
+
+  - flags: {}
+    name: ptr
+    type: "void *"
+
+  - flags:
+      read: ""
+    name: nb
+    type: "size_t"
+
+  - flags:
+      read: ""
+    name: buflen
+    type: "size_t"
+  errs: [EAGAIN,EWOULDBLOCK,EBADF,EFAULT,EINTR,EINVAL,EIO,EISDIR]
+  err_ret: -1
+
+- name: __vfwprintf_chk
+  ret: "int"
+  flags: [buffer, output_format_ws, log, nonauto]
+  args:
+  - flags:
+      read: ""
+    name: fp
+    type: "FILE *"
+
+  - flags: {}
+    name: flag
+    type: "int"
+
+  - flags: {}
+    name: format
+    type: "const wchar_t *"
+
+  - flags: {}
+    name: ap
+    type: "va_list"
+  errs: [EILSEQ,ENOMEM,EAGAIN,EWOULDBLOCK,EBADF,EDESTADDRREQ,EDQUOT,EFBIG,EINT,EINVAL,EIO,ENOSPC,EPIPE]
+  err_ret: -1
+
+
+- name: __vwprintf_chk
+  ret: "int"
+  flags: [buffer, shorted]
+  real_call: "__vfwprintf_chk(stdout, flag, format, ap)"
+  args:
+  - flags: {}
+    name: flag
+    type: "int"
+
+  - flags: {}
+    name: format
+    type: "const wchar_t *"
+
+  - flags: {}
+    name: ap
+    type: "va_list"
+  errs: [EILSEQ,ENOMEM,EAGAIN,EWOULDBLOCK,EBADF,EDESTADDRREQ,EDQUOT,EFBIG,EINT,EINVAL,EIO,ENOSPC,EPIPE]
+  err_ret: -1
+
+
+
+- name: __fwprintf_chk
+  ret: "int"
+  real_func: "__vfwprintf_chk"
+  flags: [vararg, nofnptr, buffer]
+  args:
+  - flags:
+      read: ""
+    name: fp
+    type: "FILE *"
+
+  - flags: {}
+    name: flag
+    type: "int"
+
+  - flags: {}
+    name: format
+    type: "const wchar_t *"
+  errs: [EILSEQ,ENOMEM,EAGAIN,EWOULDBLOCK,EBADF,EDESTADDRREQ,EDQUOT,EFBIG,EINT,EINVAL,EIO,ENOSPC,EPIPE]
+  err_ret: -1
+
+
+- name: __wprintf_chk
+  ret: "int"
+  real_func: "__vwprintf_chk"
+  flags: [vararg, nofnptr, buffer]
+  args:
+  - flags: {}
+    name: flag
+    type: "int"
+
+  - flags: {}
+    name: format
+    type: "const wchar_t *"
+  errs: [EILSEQ,ENOMEM,EAGAIN,EWOULDBLOCK,EBADF,EDESTADDRREQ,EDQUOT,EFBIG,EINT,EINVAL,EIO,ENOSPC,EPIPE]
+  err_ret: -1
+
+
+
+- name: openat
+  ret: "int"
+  flags: [open, errinj, dir]
+  args: "int dirfd, const char *pathname, int flags, ..."
+  errs: [EBADF,ENOTDIR,EACCES,EEXIST,EINTR,EINVAL,EIO,EISDIR,ELOOP,EMFILE,ENAMETOOLONG,ENFILE,ENFILE,ENOENT,ENOSR,ENOSPC,ENOTDIR,ENXIO,EOVERFLOW,EROFS,EAGAIN,ETXTBSY]
+  err_ret: -1
+
+- name: openat64
+  ret: "int"
+  flags: [open, errinj, dir]
+  args: "int dirfd, const char *pathname, int flags, ..."
+  errs: [EBADF,ENOTDIR,EACCES,EEXIST,EINTR,EINVAL,EIO,EISDIR,ELOOP,EMFILE,ENAMETOOLONG,ENFILE,ENFILE,ENOENT,ENOSR,ENOSPC,ENOTDIR,ENXIO,EOVERFLOW,EROFS,EAGAIN,ETXTBSY]
+  err_ret: -1
+
+- name: renameat
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags: {}
+    name: "olddirfd"
+    type: "int"
+
+  - flags:
+      read: ""
+      dirfd:
+        fd: "olddirfd"
+        type: "abs"
+    name: "oldpath"
+    type: "const char *"
+
+  - flags: {}
+    name: "newdirfd"
+    type: "int"
+
+  - flags:
+      read: ""
+      dirfd:
+        fd: "newdirfd"
+    name: "newpath"
+    type: "const char *"
+  errs: [EBADF, ENOTDIR,EACCES,EBUSY,EDQUOT,EFAULT,EINVAL,EISDIR,ELOOP,EMLINK,ENAMETOOLONG,ENOENT,ENOMEM,ENOSPC,ENOTDIR,ENOTEMPTY,EEXIST,EPERM,EROFS,EXDEV]
+  err_ret: -1
+
+
+- name: mkfifoat
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+    name: dirfd
+    type: "int"
+
+  - flags:
+      read: ""
+      dirfd:
+        fd: "dirfd"
+    name: pathname
+    type: "const char *"
+
+  - flags:
+      read: ""
+    name: mode
+    type: "mode_t"
+  errs: [EBADF,ENOTDIR]
+  err_ret: -1
+
+- name: symlinkat
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+      can: ""
+    name: oldpath
+    type: "const char *"
+
+  - flags:
+      read: ""
+    name: newdirfd
+    type: "int"
+
+  - flags:
+      read: ""
+      dirfd:
+        fd: "newdirfd"
+    name: newpath
+    type: "const char *"
+  errs: [EBADF,ENOTDIR]
+  err_ret: -1
+
+
+- name: mkdirat
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+    name: dirfd
+    type: "int"
+
+  - flags:
+      read: ""
+      dirfd:
+        fd: "dirfd"
+    name: pathname
+    type: "const char *"
+
+  - flags:
+      read: ""
+    name: mode
+    type: "mode_t"
+  errs: [EBADF,ENOTDIR]
+  err_ret: -1
+
+
+- name: unlinkat
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+    name: dirfd
+    type: "int"
+
+  - flags:
+      read: ""
+      dirfd:
+        fd: "dirfd"
+    name: pathname
+    type: "const char *"
+
+  - flags:
+      read: ""
+    name: flags
+    type: "int"
+  errs: [EBADF,ENOTDIR]
+  errs_also: "unlink"
+  err_ret: -1
+
+
+- name: fchmodat
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+    name: dirfd
+    type: "int"
+
+  - flags:
+      read: ""
+      dirfd:
+        fd: "dirfd"
+        sym:
+          arg: "flags"
+          val: "AT_SYMLINK_NOFOLLOW"
+          comp: "AT_SYMLINK_NOFOLLOW"
+    name: pathname
+    type: "const char *"
+
+  - flags:
+      read: ""
+    name: mode
+    type: "mode_t"
+
+  - flags:
+      read: ""
+    name: flags
+    type: "int"
+  errs: [EBADF,ENOTDIR,EPERM,EROFS, EINTR,EINVAL]
+  err_ret: -1
+
+- name: fchownat
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+    name: dirfd
+    type: "int"
+
+  - flags:
+      read: ""
+      dirfd:
+        fd: "dirfd"
+        sym:
+          arg: "flags"
+          val: "AT_SYMLINK_NOFOLLOW"
+          comp: "AT_SYMLINK_NOFOLLOW"
+    name: pathname
+    type: "const char *"
+
+  - flags:
+      read: ""
+    name: owner
+    type: "uid_t"
+
+  - flags:
+      read: ""
+    name: group
+    type: "gid_t"
+
+  - flags:
+      read: ""
+    name: flags
+    type: "int"
+  errs: [EBADF,ENOTDIR,EBADF,EPERM,EROFS,EIO, EINTR,EINVAL]
+  err_ret: -1
+
+
+- name: linkat
+  ret: "int"
+  flags: [errinj]
+  args:
+  - flags:
+      read: ""
+    name: olddirfd
+    type: "int"
+
+  - flags:
+      read: ""
+      dirfd:
+        fd: "olddirfd"
+        sym:
+          arg: "flags"
+          val: "AT_SYMLINK_FOLLOW"
+          comp: "0"
+    name: oldpath
+    type: "const char *"
+
+  - flags:
+      read: ""
+    name: newdirfd
+    type: "int"
+
+  - flags:
+      read: ""
+      dirfd:
+        fd: "newdirfd"
+    name: newpath
+    type: "const char *"
+
+  - flags:
+      read: ""
+    name: flags
+    type: "int"
+  errs: [EBADF,ENOTDIR,EACCES,EDQUOT,EEXIST,EFAULT,EIO,ELOOP,EMLINK,ENAMETOOLONG,ENOENT,ENOMEM,ENOSPC,ENOTDIR,EPERM,EROFS,EXDEV]
+  err_ret: -1
+
+- name: malloc
+  ret: "void*"
+  flags: [memctl,errinj]
+  args:
+  - flags:
+      read: ""
+    name: size
+    type: "size_t"
+  errs: [ENOMEM]
+  err_ret: "NULL"
+
+- name: calloc
+  ret: "void*"
+  flags: [memctl, errinj]
+  args:
+  - flags:
+      read: ""
+    name: nmemb
+    type: "size_t"
+  - flags:
+      read: ""
+    name: size
+    type: "size_t"
+  errs: [ENOMEM]
+  err_ret: "NULL"
+
+- name: realloc
+  ret: "void*"
+  flags: [memctl, errinj]
+  args:
+  - flags:
+      read: ""
+    name: ptr
+    type: "void*"
+  - flags:
+      read: ""
+    name: size
+    type: "size_t"
+  errs: [ENOMEM]
+  err_ret: "NULL"
+
+- name: free
+  ret: "void"
+  flags: [nogen, memctl]
+  args:
+  - flags:
+      read: ""
+    name: prt
+    type: "void*"
+  errs: []
+  err_ret: "NULL"
