@@ -1,5 +1,5 @@
 
-Code for FIT tool of library fault injection project, part of Part II Computer Science Tripos.
+Code for FIT tool of library fault injection project, part of Part II Computer Science Tripos Personal Project.
 
 Email for copy of the dissertation. Note this is a public port of the original project.
 
