@@ -286,11 +286,10 @@ def main():
                         help="Non-random non-critical errors only", default=False)
     parser.add_argument('-t', '--test', dest='test', help="Prepare, compile and execute selftests", action='store_true',
                         default=False)
-    parser.add_argument('-b', '--basic', dest='basic', action='store_true', default=False)
+    parser.add_argument('-b', '--basic', dest='basic', action='store_true', help='Just select functions', default=False)
     parser.add_argument('-c', '--recompile', dest='recompile', action='store_true',
                         help="Just recompile, without generation", default=False)
     parser.add_argument('-d', '--output-dir', dest='dir', help='Output Path', default='')
-    # parser.add_argument('folderpath', help='Path to a folder containing function-def file and src subfolder for source code')
     args = parser.parse_args()
     print "Looking for files at {}".format(os.path.abspath(args.dir))
     interposc = args.dir + "Interposition/src/Interpos.cpp"
@@ -305,31 +304,6 @@ def main():
               '__isoc99_vfscanf', '__wprintf_chk', '__vwprintf_chk', '__fwprintf_chk', '__vfwprintf_chk', 'socketpair',
               'calloc', 'malloc', 'realloc']
         funcs = rebuild_func(oldfuncs, True, rm, args.verbose, args.errors)
-
-        # This is for the formatting for the disseration
-        # Feel free to remove this
-        # def c(a, b):
-        #     x = a["name"]
-        #     while x.startswith('_') or x.startswith('I') or x.startswith('O'):
-        #         x=x[1:]
-        #     y = b["name"]
-        #     while y.startswith('_')or y.startswith('I') or y.startswith('O'):
-        #         y=y[1:]
-        #     if x>y:
-        #         return 1
-        #     elif y>x:
-        #         return -1
-        #     else:
-        #         return 1
-        #
-        # fn = sorted(funcs, cmp=c)
-        # # fn = funcs
-        # l = 31
-        # for i in range(l):
-        #     print "{:23s}{:15s}{:23s}{}".format(fn[4*i]["name"], fn[4*i+1]["name"],fn[4*i+2]["name"],fn[4*i+3]["name"])
-        # print "{:23s}{:15s}{}".format(fn[-3]["name"], fn[-2]["name"],fn[-1]["name"])
-        # return True
-
 
         if args.basic:
             nl = []
